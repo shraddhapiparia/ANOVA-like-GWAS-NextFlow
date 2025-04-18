@@ -1,0 +1,4 @@
+plink_prefix: "path_to_bfiles"
+pheno_file: "path_to_phenotype_file"
+r_script: "path_to_rscript"
+bim_file: "path_to_bim_file"
