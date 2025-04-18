@@ -37,11 +37,15 @@ This pipeline is built using **Nextflow DSL2** and requires the following enviro
 
 ### On SLURM-based HPC
 Submit with:
+
 cd workflow
+
 sbatch nextflow_cra.sh
 
 Or run directly
+
 cd workflow
+
 nextflow run new_pipeline.nf -params-file params-file.yaml -resume
 
 ## 📊 Output
