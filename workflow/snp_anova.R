@@ -32,19 +32,19 @@ ANOVA_out <- data.frame()
 for (i in 1:ncol(genotypes_batch)){
   snp_data <- genotypes_batch[, i]
   # 1. Anova across groups
-  anova_model <- aov(as.numeric(snp_data) ~ Cluster + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8 + PC9 + PC10, data = phenotype_data )
+  anova_model <- aov(as.numeric(snp_data) ~ Cluster + Age + Sex + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8 + PC9 + PC10, data = phenotype_data )
   anova_summary <- summary(anova_model)
   anova_f <- anova_summary[[1]][["F value"]][1]
   anova_pval <- anova_summary[[1]][["Pr(>F)"]][1]
   
   # 2. Trend test (ordinal encoding of cluster)
-  trend_model <- lm(snp_data ~ numeric_cluster + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8 + PC9 + PC10, data = phenotype_data)
+  trend_model <- lm(snp_data ~ numeric_cluster + Age + Sex + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8 + PC9 + PC10, data = phenotype_data)
   trend_summary <- summary(trend_model)
   trend_coef <- trend_summary$coefficients["numeric_cluster", "Estimate"]
   trend_pval <- trend_summary$coefficients["numeric_cluster", "Pr(>|t|)"]
   
   # 3. Linear regression with raw PC1_clinical
-  pc1_model <- lm(snp_data ~ pc1_clinical + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8 + PC9 + PC10, data = phenotype_data)
+  pc1_model <- lm(snp_data ~ pc1_clinical + Age + Sex + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8 + PC9 + PC10, data = phenotype_data)
   pc1_summary <- summary(pc1_model)
   pc1_coef <- pc1_summary$coefficients["pc1_clinical", "Estimate"]
   pc1_pval <- pc1_summary$coefficients["pc1_clinical", "Pr(>|t|)"]
