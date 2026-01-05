@@ -32,7 +32,7 @@ ANOVA_out <- data.frame()
 for (i in 1:ncol(genotypes_batch)){
   snp_data <- genotypes_batch[, i]
   # 1. Anova across groups
-  anova_model <- aov(as.numeric(snp_data) ~ Cluster + Age + Sex + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8 + PC9 + PC10, data = phenotype_data )
+  anova_model <- aov(as.numeric(snp_data) ~  Age + Sex + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8 + PC9 + PC10 + Cluster, data = phenotype_data )
   anova_summary <- summary(anova_model)
   anova_f <- anova_summary[[1]][["F value"]][1]
   anova_pval <- anova_summary[[1]][["Pr(>F)"]][1]
