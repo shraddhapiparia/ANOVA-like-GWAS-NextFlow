@@ -27,7 +27,7 @@ This pipeline is built using **Nextflow DSL2** and requires the following enviro
 
 | Tool       | Version      |
 |------------|--------------|
-| Java       | 15           |
+| Java       | 17+           |
 | R          | 4.3.2        |
 | Nextflow   | 25.10.5      |
 
