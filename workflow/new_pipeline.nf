@@ -26,7 +26,7 @@ process RUN_BATCH {
     tuple val(start), val(end), val(batch_num), path(pheno_file), path(r_script)
 
     output:
-    file "CRA_AKClusters_batch${batch_num}.tsv"
+    path "gwas_results_batch${batch_num}.csv"
 
     script:
     """

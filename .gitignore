@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Nextflow runtime
+.nextflow/
+.nextflow.log*
+work/
+
+# Pipeline outputs (generated, not source)
+results/
+
+# R session artifacts
+*.Rhistory
+*.RData
+.Rproj.user/
+
+# SLURM logs
+slurm-*.out
+slurm-*.err
+
+# Common temp/intermediate files
+*.tmp
+*.log

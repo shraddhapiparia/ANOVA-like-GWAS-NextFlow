@@ -1,4 +1,14 @@
-plink_prefix: "path_to_bfiles"
-pheno_file: "path_to_phenotype_file"
-r_script: "path_to_rscript"
-bim_file: "path_to_bim_file"
+# TEMPLATE: Fill in all values below with your actual paths before running.
+# Paths can be absolute or relative to the workflow/ directory.
+
+# Path to PLINK binary fileset prefix (without .bed/.bim/.fam extension)
+plink_prefix: "/path/to/your/plink_data/prefix"
+
+# Path to phenotype file (tab- or comma-delimited; must contain: Cluster, Age, Sex, PC1-PC10, pc1_clinical, and sample IDs matching PLINK FAM)
+pheno_file: "/path/to/your/phenotype.csv"
+
+# Path to snp_anova.R (absolute path recommended on HPC)
+r_script: "/path/to/repo/workflow/snp_anova.R"
+
+# Path to .bim file (same prefix as plink_prefix, with .bim extension)
+bim_file: "/path/to/your/plink_data/prefix.bim"

@@ -4,7 +4,7 @@ pheno_file <- args[2]
 start_idx <- as.numeric(args[3])
 end_idx <- as.numeric(args[4])
 batch_num <- as.numeric(args[5])
-.libPaths("any_required_paths_for_libraries")
+# .libPaths("/path/to/your/R/library")  # Uncomment and set if using a custom R library path on your HPC
 library(data.table)
 library(snpStats)
 
@@ -69,7 +69,7 @@ for (i in 1:ncol(genotypes_batch)){
     gc()
   }
 }
-out_file <- paste0("filename_batch", batch_num, ".csv")
+out_file <- paste0("gwas_results_batch", batch_num, ".csv")
 write.csv(ANOVA_out, out_file, row.names = FALSE)
 cat("Finished writing", out_file, "\n")
 
