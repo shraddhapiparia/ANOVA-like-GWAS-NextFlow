@@ -1,6 +1,6 @@
 #!/bin/bash -l
-# TEMPLATE: Copy this file and fill in all <PLACEHOLDER> values before submitting.
-# Do not submit this file directly.
+# Based on the SLURM submission script used for production HPC runs.
+# Site-specific values have been replaced with <PLACEHOLDER> entries for public release.
 
 #SBATCH --job-name=gwas_nextflow
 #SBATCH --output=<PATH_TO_LOG_DIR>/gwas_output_%j.txt
