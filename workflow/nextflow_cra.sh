@@ -26,4 +26,4 @@ module load nextflow
 cd <PATH_TO_REPO>/workflow
 
 # Run Nextflow
-nextflow run new_pipeline.nf -params-file params-file.yaml -resume
+nextflow run main.nf -params-file params-file.yaml -profile slurm -resume

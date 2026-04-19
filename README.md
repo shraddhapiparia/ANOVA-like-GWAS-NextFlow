@@ -9,9 +9,9 @@ This repository contains a scalable pipeline for performing genome-wide associat
 | Path                  | Purpose                                           |
 |-----------------------|---------------------------------------------------|
 | `workflow/`            | All workflow-related scripts and configs          |
-| ├── `new_pipeline.nf`  | Main Nextflow workflow definition                 |
+| ├── `main.nf`          | Main Nextflow workflow definition                 |
 | ├── `test.nf`          | Smoke-test workflow (no module load, uses example/) |
-| ├── `nextflow.config`  | Executor settings (e.g., SLURM resources)         |
+| ├── `nextflow.config`  | Profiles and resource settings (slurm profile)    |
 | ├── `params-file.yaml` | Input paths and batch parameters (template)       |
 | ├── `params-test.yaml` | Params for smoke test (fill in paths)             |
 | ├── `snp_anova.R`      | R script for ANOVA, trend, and linear testing     |
@@ -51,7 +51,9 @@ install.packages("BiocManager"); BiocManager::install("snpStats")
 | PLINK binary fileset | `.bed`, `.bim`, `.fam` files (prefix specified in `params-file.yaml`) |
 | Phenotype file | Delimited text file with one row per sample; must contain columns: `Cluster`, `Age`, `Sex`, `PC1`–`PC10`, `pc1_clinical`; sample IDs must match the PLINK `.fam` file |
 
-A tiny synthetic dataset (25 samples, 10 SNPs) is included in `example/` for smoke-testing. It is not real data and exists only to verify the pipeline runs end-to-end. For real analyses you must supply your own PLINK-format genetic data and a matching phenotype file.
+A tiny synthetic dataset (25 samples, 10 SNPs) is included in `example/` for smoke-testing. It is not real data and exists only to verify the pipeline runs end-to-end. For real analyses you must supply your own PLINK-format genetic data and a matching phenotype file. 
+
+Sample order must match the PLINK .fam file row order; the current implementation does not merge by sample ID.
 
 ---
 
@@ -109,18 +111,19 @@ cd workflow
 sbatch my-submit.sh
 ```
 
-### Directly (interactive or local testing)
+### Directly on HPC (interactive session)
 
 ```bash
 cd workflow
-nextflow run new_pipeline.nf -params-file my-params.yaml -resume
+nextflow run main.nf -params-file my-params.yaml -profile slurm -resume
 ```
 
 ---
 
 ## Expected Outputs
 
-Each batch produces one CSV file: `gwas_results_batch{N}.csv`
+
+The pipeline parallelizes association testing by partitioning genome-wide SNPs into independent batches processed concurrently by Nextflow. Each batch produces one CSV file: `gwas_results_batch{N}.csv`
 
 Each file contains one row per SNP with columns:
 
@@ -134,17 +137,17 @@ Each file contains one row per SNP with columns:
 
 Batch outputs can be concatenated and used to generate Manhattan plots, Q-Q plots, and endotype-stratified association signals.
 
+
 ---
 
 ## Cluster-specific vs. Portable
 
 **Cluster-specific** (must be adapted per site):
-- `nextflow_cra.sh` — SLURM directives, module names, paths
-- `nextflow.config` — executor, memory/time per process
-- `snp_anova.R` line 7 — custom R library path (`.libPaths`)
-- `new_pipeline.nf` — `module load R/4.3.2` and `TMPDIR` inside the `RUN_BATCH` script block
+- `nextflow_cra.sh` — SLURM directives, log paths, node/partition names
+- `nextflow.config` `slurm` profile — `module load` names, `TMPDIR`, memory/time limits
+- `snp_anova.R` line 7 — optional custom R library path (`.libPaths`)
 
 **Portable** (no changes needed):
-- `new_pipeline.nf` — workflow logic
+- `main.nf` — workflow logic and process definitions
 - `snp_anova.R` — statistical analysis
 - `params-file.yaml` — parameter structure (only paths need filling in)
