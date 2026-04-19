@@ -1,0 +1,12 @@
+# Smoke-test params. Paths must be absolute.
+# Replace /absolute/path/to/repo with the actual path on your system.
+#
+# Example (macOS/Linux):
+#   plink_prefix: "/home/user/ANOVA-like-GWAS-NextFlow/example/example"
+#   pheno_file:   "/home/user/ANOVA-like-GWAS-NextFlow/example/example_pheno.csv"
+#   r_script:     "/home/user/ANOVA-like-GWAS-NextFlow/workflow/snp_anova.R"
+
+plink_prefix: "/absolute/path/to/repo/example/example"
+pheno_file:   "/absolute/path/to/repo/example/example_pheno.csv"
+r_script:     "/absolute/path/to/repo/workflow/snp_anova.R"
+end_snp:      10
