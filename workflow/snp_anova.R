@@ -34,8 +34,9 @@ for (i in 1:ncol(genotypes_batch)){
   # 1. Anova across groups
   anova_model <- aov(as.numeric(snp_data) ~  Age + Sex + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8 + PC9 + PC10 + Cluster, data = phenotype_data )
   anova_summary <- summary(anova_model)
-  anova_f <- anova_summary[[1]][["F value"]][1]
-  anova_pval <- anova_summary[[1]][["Pr(>F)"]][1]
+  tab <- anova_summary[[1]]
+  anova_f    <- tab["Cluster", "F value"]
+  anova_pval <- tab["Cluster", "Pr(>F)"]
   
   # 2. Trend test (ordinal encoding of cluster)
   trend_model <- lm(snp_data ~ numeric_cluster + Age + Sex + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8 + PC9 + PC10, data = phenotype_data)
