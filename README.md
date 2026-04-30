@@ -119,8 +119,8 @@ Runs `snp_anova.R` on a synthetic 25-sample / 10-SNP dataset without any HPC mod
 **Does not require:** SLURM, `module load`, or real genetic data.
 
 ```bash
-# 1. Edit params-test.yaml — replace /absolute/path/to/repo with your actual path
-#    (Three fields: plink_prefix, pheno_file, r_script)
+# 1. Edit params-test.yaml — replace /absolute/path/to/repo with your actual path.
+#    Three fields to fill in: plink_prefix, pheno_file, r_script.
 
 # 2. Run from the workflow/ directory
 cd workflow
@@ -128,14 +128,6 @@ nextflow run test.nf -params-file params-test.yaml
 ```
 
 Expected output in `workflow/` (or the Nextflow work directory):
-
-```
-gwas_results_batch1.csv   # 10 rows, one per SNP
-```
-
-The CSV will contain columns `snp`, `chromosome`, `position`, `ANOVA_F`, `ANOVA_pvalue`,
-`Trend_Estimate`, `Trend_pvalue`, `PC1_Clinical_Estimate`, `PC1_Clinical_pvalue`.
-Statistical values are not meaningful (synthetic data); the test passes if the file is produced with 10 rows and no R errors.
 
 ---
 
@@ -178,13 +170,14 @@ nextflow run main.nf -params-file my-params.yaml -profile slurm -resume
 
 The pipeline parallelizes association testing by partitioning genome-wide SNPs into independent batches processed concurrently by Nextflow. Each batch produces one CSV file: `gwas_results_batch{N}.csv`
 
+
 Each file contains one row per SNP with columns:
 
 | Column | Description |
 |--------|-------------|
 | `snp` | SNP identifier |
-| `chromosome`, `position`, `allele.1`, `allele.2` | SNP metadata |
-| `ANOVA_F`, `ANOVA_pvalue` | ANOVA F-statistic and p-value (cluster as factor) |
+| `chromosome`, `genetic_distance`, `position`, `allele.1`, `allele.2` | SNP metadata from the `.bim` file |
+| `ANOVA_F`, `ANOVA_pvalue` | ANOVA F-statistic and p-value for the cluster (endophenotype) factor |
 | `Trend_Estimate`, `Trend_pvalue` | Linear trend test (ordinal cluster encoding) |
 | `PC1_Clinical_Estimate`, `PC1_Clinical_pvalue` | Linear regression vs. clinical PC1 |
 
