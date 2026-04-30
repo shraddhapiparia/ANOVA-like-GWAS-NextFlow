@@ -21,3 +21,9 @@ slurm-*.err
 # Common temp/intermediate files
 *.tmp
 *.log
+
+.Rproj
+__pycache__/
+*.pyc
+.idea/
+.vscode/
