@@ -6,7 +6,13 @@
 
 nextflow.enable.dsl=2
 
+// The example dataset is fixed at 10 SNPs (see example/make_example_data.py).
+// Hardcoded here so params-test.yaml only needs path fields.
+def EXAMPLE_END_SNP = 10
+
 process SMOKE_TEST {
+    tag "smoke-test"
+
     input:
     tuple val(start), val(end), val(batch_num), path(pheno_file), path(r_script)
 
@@ -28,7 +34,7 @@ workflow {
     SMOKE_TEST(
         Channel.value([
             1,
-            params.end_snp,
+            EXAMPLE_END_SNP,
             1,
             file(params.pheno_file),
             file(params.r_script)
