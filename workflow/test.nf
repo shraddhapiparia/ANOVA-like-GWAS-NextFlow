@@ -8,6 +8,7 @@ nextflow.enable.dsl=2
 
 // The example dataset is fixed at 10 SNPs (see example/make_example_data.py).
 // Hardcoded here so params-test.yaml only needs path fields.
+
 def EXAMPLE_END_SNP = 10
 
 process SMOKE_TEST {
