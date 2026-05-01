@@ -1,0 +1,80 @@
+cohort_name: camp
+input_file: data/camp_pheno_2022-08-04.tsv
+separator: "\t"
+output_dir: endophenotype_derivation/outputs
+
+id_column: camp
+
+variables:
+  SEX:
+    type: binary
+
+  RACE:
+    type: binarize
+    rule: white_vs_nonwhite
+    white_values: [1]
+
+  AGE:
+    type: continuous
+
+  IUS:
+    type: binary
+
+  ETS:
+    type: binary
+
+  AGEON:
+    type: continuous
+
+  AH116N:
+    type: binary
+
+  AH121n:
+    type: binarize
+    rule: greater_than
+    threshold: 1
+    clinical_category: Symptom_History
+    category_id: 5
+
+  AH198N:
+    type: binary
+
+  ANYPOS_S3:
+    type: binary
+
+  BDRABPCT_RZ:
+    type: continuous
+    transform: fraction_to_percent
+
+  LOG10EOS_S3:
+    type: continuous
+
+  PREPF_RZ:
+    type: continuous
+
+  PREFF_RZ:
+    type: continuous
+
+  WAIST_HIP_S3:
+    type: continuous
+
+  LOG10IGE_S3:
+    type: continuous
+
+  BMI_RZ:
+    type: continuous
+
+  PREFEVPP_RZ:
+    type: continuous
+
+  POSFVCPP_RZ:
+    type: continuous
+
+  HAYF:
+    type: binary
+
+  HS209CN_S3:
+    type: continuous
+
+  HS209AN_S3:
+    type: continuous
