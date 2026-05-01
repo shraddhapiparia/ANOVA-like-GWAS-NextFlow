@@ -4,32 +4,74 @@ pheno_file <- args[2]
 start_idx <- as.numeric(args[3])
 end_idx <- as.numeric(args[4])
 batch_num <- as.numeric(args[5])
-
-# .libPaths("/path/to/your/R/library")  # Uncomment and set if using a custom R library path on your HPC
-
 library(data.table)
 library(snpStats)
 
+# Optional: set custom R library path for HPC environments where
+# Bioconductor packages live outside the default location.
+# Example:
+#   .libPaths(c("/cluster/r-libs/4.3.2", .libPaths()))
+
 phenotype_data <- fread(pheno_file)
-phenotype_data$Cluster = as.factor(phenotype_data$Cluster)
+
+# --- Validate phenotype file has all required columns -----------------------
+required_cols <- c("IID", "Cluster", "Age", "Sex",
+                   paste0("PC", 1:10), "pc1_clinical")
+missing_cols <- setdiff(required_cols, names(phenotype_data))
+if (length(missing_cols) > 0) {
+  stop("Phenotype file is missing required columns: ",
+       paste(missing_cols, collapse = ", "))
+}
+
+phenotype_data$IID <- as.character(phenotype_data$IID)
+phenotype_data$Cluster <- as.factor(phenotype_data$Cluster)
 phenotype_data$numeric_cluster <- as.numeric(phenotype_data$Cluster)
 
+# --- Read SNP metadata from .bim --------------------------------------------
 bim_file <- paste0(plink_prefix, ".bim")
 snp_info <- fread(bim_file, header = FALSE)
-colnames(snp_info) <- c("chromosome", "snp_id", "cM", "position", "allele.1", "allele.2")
-rownames(snp_info) <- snp_info$snp_id
-
+colnames(snp_info) <- c("chromosome", "snp_id", "cM", "position",
+                        "allele.1", "allele.2")
 snp_info <- snp_info[!duplicated(snp_id)]
 snp_ids <- snp_info$snp_id
 num_snps <- length(snp_ids)
 
 snps_batch_ids <- snp_ids[start_idx:end_idx]
-snp_info_batch <- snp_info[match(snps_batch_ids, snp_info$snp_id), ] 
+snp_info_batch <- snp_info[match(snps_batch_ids, snp_info$snp_id), ]
 
+# --- Read PLINK sample order from .fam --------------------------------------
+# Read .fam directly rather than relying on snpStats row names: snpStats
+# picks pedigree IDs when unique and falls back to member IDs otherwise,
+# so reading column 2 ourselves is unambiguous.
+fam_file <- paste0(plink_prefix, ".fam")
+fam_data <- fread(fam_file, header = FALSE,
+                  col.names = c("FID", "IID", "PAT", "MAT", "Sex_fam", "Pheno_fam"))
+fam_iids <- as.character(fam_data$IID)
+
+# --- Read genotypes for this batch ------------------------------------------
 cat("\nReading batch", batch_num, ":", start_idx, "-", end_idx, "\n")
 genetic_data_batch <- read.plink(plink_prefix, select.snps = snps_batch_ids)
 genotypes_batch <- as(genetic_data_batch$genotypes, "numeric")
 
+# --- Align phenotype rows to PLINK sample order by IID ----------------------
+# We do not assume the phenotype file is pre-sorted to match the .fam file.
+# Every .fam IID must be present in the phenotype file; extra phenotype rows
+# (samples not in the genotype data) are dropped.
+pheno_idx <- match(fam_iids, phenotype_data$IID)
+n_missing <- sum(is.na(pheno_idx))
+if (n_missing > 0) {
+  missing_iids <- fam_iids[is.na(pheno_idx)]
+  stop(n_missing, " PLINK sample(s) missing from phenotype file. ",
+       "First few: ",
+       paste(head(missing_iids, 10), collapse = ", "),
+       if (n_missing > 10) paste0(" ... (", n_missing, " total)") else "")
+}
+phenotype_data <- phenotype_data[pheno_idx, ]
+
+cat("Aligned", nrow(phenotype_data), "phenotype rows to PLINK sample order ",
+    "(", nrow(genotypes_batch), "samples in genotype data).\n")
+
+# ------------ Run ANOVA ----------------
 ANOVA_out <- data.frame()
 
 for (i in 1:ncol(genotypes_batch)){
@@ -38,8 +80,9 @@ for (i in 1:ncol(genotypes_batch)){
   anova_model <- aov(as.numeric(snp_data) ~  Age + Sex + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8 + PC9 + PC10 + Cluster, data = phenotype_data )
   
   anova_summary <- summary(anova_model)
-  anova_f <- anova_summary[[1]][["F value"]][1]
-  anova_pval <- anova_summary[[1]][["Pr(>F)"]][1]
+  tab <- anova_summary[[1]]
+  anova_f    <- tab["Cluster", "F value"]
+  anova_pval <- tab["Cluster", "Pr(>F)"]
   
   # 2. Trend test (ordinal encoding of PC1-based endophenotypes)
   trend_model <- lm(snp_data ~ numeric_cluster + Age + Sex + PC1 + PC2 + PC3 + PC4 + PC5 + PC6 + PC7 + PC8 + PC9 + PC10, data = phenotype_data)

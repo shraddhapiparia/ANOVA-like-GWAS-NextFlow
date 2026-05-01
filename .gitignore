@@ -24,3 +24,9 @@ endophenotype_derivation/outputs/
 # Common temp/intermediate files
 *.tmp
 *.log
+
+.Rproj
+__pycache__/
+*.pyc
+.idea/
+.vscode/
