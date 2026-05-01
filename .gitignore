@@ -18,6 +18,9 @@ results/
 slurm-*.out
 slurm-*.err
 
+# Endophenotype derivation outputs (generated, not source)
+endophenotype_derivation/outputs/
+
 # Common temp/intermediate files
 *.tmp
 *.log

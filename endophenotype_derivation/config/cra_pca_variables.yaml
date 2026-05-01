@@ -1,0 +1,107 @@
+cohort_name: cra
+input_file: data/COS_TRIO_pheno_1165.csv
+separator: ","
+output_dir: endophenotype_derivation/outputs
+
+# Change this if the CRA file has a real subject ID column.
+# If no ID column exists, the script should use row index.
+id_column: S_SUBJECTID
+
+variables:
+  gender:
+    type: binary
+    value_map:
+      M: 1
+      F: 0
+    clinical_category: Demographics
+    category_id: 1
+
+  central_valley:
+    type: binary
+    clinical_category: Demographics
+    category_id: 1
+
+  age:
+    type: continuous
+    clinical_category: Demographics
+    category_id: 1
+
+  BMI:
+    type: continuous
+    clinical_category: BMI_Body_Shape
+    category_id: 2
+
+  G19B:
+    type: continuous
+    clinical_category: Symptom_History
+    category_id: 3
+
+  G29A:
+    type: binary
+    clinical_category: Symptom_History
+    category_id: 3
+
+  smkexp_current:
+    type: binary
+    clinical_category: Smoke_Exposure
+    category_id: 4
+
+  Hospitalized_Asthma_Last_Yr:
+    type: binary
+    clinical_category: Exacerbation
+    category_id: 5
+
+  ER_Visits_Asthma_Last_Yr:
+    type: binary
+    clinical_category: Exacerbation
+    category_id: 5
+
+  G27A:
+    type: binary
+    clinical_category: Symptom_History
+    category_id: 3
+
+  any_pos_skin:
+    type: binary
+    clinical_category: Atopy_EOS
+    category_id: 6
+
+  G24E:
+    type: binary
+    clinical_category: Atopy_EOS
+    category_id: 6
+
+  bdrpred:
+    type: continuous
+    clinical_category: Lung_Function
+    category_id: 7
+
+  log10eos:
+    type: continuous
+    clinical_category: Atopy_EOS
+    category_id: 6
+
+  log10Ige:
+    type: continuous
+    clinical_category: Atopy_EOS
+    category_id: 6
+
+  pctpred_fev1_fvc_pre_BD:
+    type: continuous
+    clinical_category: Lung_Function
+    category_id: 7
+
+  pctpred_fev1_pre_BD:
+    type: continuous
+    clinical_category: Lung_Function
+    category_id: 7
+
+  pctpred_fvc_post_BD:
+    type: continuous
+    clinical_category: Lung_Function
+    category_id: 7
+
+  SA_Inhaled_B2_agonists:
+    type: binary
+    clinical_category: Medication
+    category_id: 8
